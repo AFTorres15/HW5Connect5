@@ -19,7 +19,7 @@ public class Controller {
     private static Board model;
     private static ConnectFive gui;
 
-    private Controller(Board model, ConnectFive gui) {
+    protected Controller(Board model, ConnectFive gui) {
         this.model = model;
         this.gui = gui;
 
@@ -33,6 +33,8 @@ public class Controller {
         gui.addPaintHelperListener(new PaintHelperListener());
         gui.addPaintHelper2Listener(new PaintHelper2Listener());
     }
+
+    //protected static  void sizerequest(String text);
 
     private void HumanVHuman(int x, int y) {
         try {

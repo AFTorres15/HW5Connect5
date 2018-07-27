@@ -51,7 +51,7 @@ public class ConnectFive extends JFrame {
      * Constructor that initializes and adds all the components of the frame
      * including anonymous classes for the handlers.
      */
-    ConnectFive() {
+    protected ConnectFive() {
         setTitle("Connect Five");
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,9 +63,8 @@ public class ConnectFive extends JFrame {
         pack();
     }
 
-    ConnectFive(int size, char p2Type) {
-        super();
-        createGUI(size,p2Type);
+    public ConnectFive(int size, char p2Type) {
+        super();createGUI(size,p2Type);
 
         squareSize = size;
         setVisible(true);
@@ -99,8 +98,7 @@ public class ConnectFive extends JFrame {
 
     }
 
-    private JToolBar toolBar() {
-        JToolBar toolBar = new JToolBar("Connect5");
+    protected JToolBar toolBar() {JToolBar toolBar = new JToolBar("Connect5");
 
         playButton = new JButton(createImageIcon("play30.png"));
         paintButton = new JButton(createImageIcon("paint30.png"));
@@ -271,43 +269,7 @@ public class ConnectFive extends JFrame {
         //frametmp.repaint();
     }
 
-    /**
-     * adds disc to the board and checks which player placed it
-     *
-     * @param x the x-coordinate from pixels
-     * @param y the y-coordinate from pixels
-     */
-//    protected void passCoordinates(int x, int y) {
-//        try {
-//            if (turn) {
-//                message.setText("Player 2's turn");
-//                boardPanel.getBoard().addDisc(x - 1, y - 1, 1);
-//                turn = false;
-//            } else {
-//                message.setText("Player 1's turn");
-//                boardPanel.getBoard().addDisc(x - 1, y - 1, 2);
-//                turn = true;
-//            }
-//
-//        } catch (InValidDiskPositionException ex1) {
-//            message.setText("INVALID PLACEMENT: ALREADY OCCUPIED");
-//            Sound.playInvalidTileSound();
-//
-//        } catch (Exception ex1) {
-//            System.out.println("ITS A TIE");
-//
-//        }
-//        if (boardPanel.getBoard().getBoardWon()) {
-//            if (boardPanel.getBoard().getWinner() == 1) {
-//                message.setText("PLAYER 1 WINS");
-//                boardPanel.setVisible(false);
-//            } else {
-//                message.setText("PLAYER 2 WINS");
-//                boardPanel.setVisible(false);
-//            }
-//            Sound.playWinSound();
-//        }
-//    }
+
 
     /**
      * takes the pixels in the window and divides it by board size
@@ -327,7 +289,7 @@ public class ConnectFive extends JFrame {
         return result + 1;
     }
 
-    private ImageIcon createImageIcon(String filename) {
+    protected ImageIcon createImageIcon(String filename) {
         URL imageURL = getClass().getResource(IMAGE_DIR + filename);
         if (imageURL != null) {
             return new ImageIcon(imageURL);

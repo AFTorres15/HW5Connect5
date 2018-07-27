@@ -22,7 +22,7 @@ public class Sound{
         playSound("src\\Sound\\errorSound.wav");
     }
 
-    static void playAlertSound(){
+    public static void playAlertSound(){
         playSound("src\\Sound\\alertSound.wav");
     }
     private static void playSound(String fileName){
