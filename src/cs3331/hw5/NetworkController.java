@@ -1,12 +1,12 @@
 package cs3331.hw5;
 
-import cs3331.hw4.Board;
-import cs3331.hw4.Controller;
-import cs3331.hw4.Sound;
+import cs3331.hw4.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class NetworkController extends Controller  implements NetworkAdapter.MessageListener {
 private static NetworkGUI gui;
@@ -70,7 +70,8 @@ private static Board model;
     }
     static class NetworkListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-
+            //some reall cool stuff happens here
         }
     }
+
 }

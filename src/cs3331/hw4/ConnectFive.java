@@ -38,8 +38,6 @@ public class ConnectFive extends JFrame {
     private JButton mediumButton;
     private JButton p1 = new JButton("Player 1");
     private JButton p2 = new JButton("Player 2");
-
-    private JMenuItem menuItem;
     private JFrame frametmp;
     private JPanel popup;
 
@@ -64,7 +62,8 @@ public class ConnectFive extends JFrame {
     }
 
     public ConnectFive(int size, char p2Type) {
-        super();createGUI(size,p2Type);
+        super();
+        createGUI(size,p2Type);
 
         squareSize = size;
         setVisible(true);
@@ -73,6 +72,10 @@ public class ConnectFive extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+    public void setSquareSize(int size){
+        this.squareSize=size;
+    }
+
 
     /**
      * creates the buttons, and adds the other panels to create
@@ -205,7 +208,7 @@ public class ConnectFive extends JFrame {
      * @param size this is the size or the board
      * @return a panel that can be added to the window
      */
-    private BoardPanel boardPan(int size,char p2Type) {
+    public BoardPanel boardPan(int size,char p2Type) {
 
         boardPanel = new BoardPanel(new Board(size),p2Type);
         boardPanel.setPreferredSize(new Dimension(725, 725));
@@ -248,9 +251,6 @@ public class ConnectFive extends JFrame {
         frametmp.setVisible(true);
         frametmp.setResizable(false);
         frametmp.repaint();
-        //frametmp.dispose();
-        //frametmp.repaint();
-
     }
 
     void colorChooserHelper(char player) {
@@ -264,9 +264,8 @@ public class ConnectFive extends JFrame {
             if (player == '2')
                 boardPanel.setColorP2(color);
         }
-        repaint();
+        boardPanel.repaint();
         frametmp.dispose();
-        //frametmp.repaint();
     }
 
 
@@ -297,10 +296,6 @@ public class ConnectFive extends JFrame {
         return null;
     }
 
-    public JMenuItem getMenuItem() {
-        return menuItem;
-    }
-
     JLabel getMessage() {
         return message;
     }
@@ -316,6 +311,5 @@ public class ConnectFive extends JFrame {
     BoardPanel getBoardPanel() {
         return boardPanel;
     }
-
 
 }

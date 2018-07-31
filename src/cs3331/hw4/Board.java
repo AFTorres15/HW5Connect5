@@ -63,7 +63,6 @@ public class Board {
      * @return Validity of placement of the disc.
      */
     boolean isValidPosition(int x, int y) {
-        // Your Code Goes Here!
         return !isFilled[y][x];
     }
 

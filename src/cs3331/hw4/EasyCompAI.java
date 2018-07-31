@@ -15,6 +15,7 @@ public class EasyCompAI extends Computer {
         currX=coordinates[1];
     }
 
+
     public void setMove() {
 
         int[] coordinates= getComputerCoordinates();
@@ -33,10 +34,8 @@ public class EasyCompAI extends Computer {
         //here is where we check if the points are good points
         while (!validMove) {
             try {
-
-
                 setMove(x, y);
-                if (board.isValidPosition(currY, currX)) {
+                if (board.isValidPosition(currX, currY)) {
                     //accept move
                     validMove = true;
                 }

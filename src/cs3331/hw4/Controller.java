@@ -34,11 +34,9 @@ public class Controller {
         gui.addPaintHelper2Listener(new PaintHelper2Listener());
     }
 
-    //protected static  void sizerequest(String text);
 
     private void HumanVHuman(int x, int y) {
         try {
-            // player 1 goes first
             if (gui.isTurn()) {
                 gui.getMessage().setText("Player 2's turn");
                 gui.getBoardPanel().getP1().setMove(x, y);
@@ -56,26 +54,25 @@ public class Controller {
         } catch (Exception ex1) {
             System.out.println("TIE");
         }
-        // checking which player won
+        //gui.getBoardPanel().repaint();
         winHelper();
     }
 
     private void HumanVsAI(int x, int y,Board board) {
         try {
-
             gui.getMessage().setText("Player 2's turn");
             System.out.println("HUMAN MOVE");
             gui.getBoardPanel().getP1().setMove(x, y);
             gui.getBoardPanel().getBoard().addDisc(gui.getBoardPanel().getP1().currX - 1, gui.getBoardPanel().getP1().currY - 1, 1);
-
-            //AI
             System.out.println("AI MOVE");
             gui.getBoardPanel().getP2().setMove(x,y,board);
             gui.getBoardPanel().getBoard().addDisc(gui.getBoardPanel().getP2().currX, gui.getBoardPanel().getP2().currY,2);
 
         } catch (InValidDiskPositionException ex1) {
             gui.getMessage().setText("INVALID PLACEMENT");
-            Sound.playInvalidTileSound();
+            new Thread(() -> {
+                Sound.playInvalidTileSound();
+            }).start();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("oops tie");
@@ -87,12 +84,14 @@ public class Controller {
         if (gui.getBoardPanel().getBoard().getBoardWon()) {
             if (gui.getBoardPanel().getBoard().getWinner() == 1) {
                 gui.getMessage().setText("PLAYER 1 WINS");
-                gui.getBoardPanel().setVisible(false);
             } else {
                 gui.getMessage().setText("PLAYER 2 WINS");
-                gui.getBoardPanel().setVisible(false);
             }
-            Sound.playWinSound();
+            //gui.getBoardPanel().setVisible(false);
+            new Thread(() -> {
+                Sound.playWinSound();
+            }).start();
+            setNewBoard(gui.getBoardPanel().getBoard().size());
         }
     }
 
@@ -121,25 +120,30 @@ public class Controller {
     static class EasyListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             Controller.sizerequest2("Start a new game against easyAI?",'e');
-
         }
     }
     private static void easyListenerHelper(int boardSize){
         System.out.println("ez");
         Color p1ColorTmp=gui.getBoardPanel().getColorP1();
-        gui.dispose();
-        new Controller(new Board(boardSize), new ConnectFive(boardSize,'e'));
-        gui.getBoardPanel().setP2('e');
+        setNewBoard(boardSize);
         gui.getBoardPanel().setColorP1(p1ColorTmp);
         gui.getBoardPanel().getP1().setTileColor(p1ColorTmp);
         gui.getBoardPanel().setColorP2(Color.BLACK);
 
     }
+    static void setNewBoard(int boardSize){
+        gui.getBoardPanel().setBoard(new Board(boardSize));
+        gui.setSquareSize(boardSize);
+        gui.getBoardPanel().setP2('e');
+        gui.getBoardPanel().setGrid(boardSize);
+        gui.getBoardPanel().drawBoard();
+        gui.getBoardPanel().setVisible(true);
+    }
+
     private static void MediumListenerHelper(int boardSize){
         System.out.println("MEDIUM");
         gui.getBoardPanel().setP2('m');
-        gui.dispose();
-        new Controller(new Board(boardSize), new ConnectFive(boardSize,'m'));
+        setNewBoard(boardSize);
         gui.getBoardPanel().setColorP2(Color.BLACK);
         gui.getBoardPanel().setP2('m');
     }
@@ -159,20 +163,19 @@ public class Controller {
         public void mousePressed(MouseEvent e) {
             int x = gui.locateXY(e.getX());
             int y = gui.locateXY(e.getY());
-            Sound.playTileSound();
+            new Thread(() ->{
+                Sound.playTileSound();
+            }).start();
             System.out.println(gui.getBoardPanel().getP2().getIsReal());
-            //Everytime we switch from hardness or comp to 2p we MUST create a new Board
             System.out.println("P2 is of  type: "+gui.getBoardPanel().getP2().getClass());
             if (gui.getBoardPanel().getP2() instanceof Human) {
                 HumanVHuman(x, y);
             }else if (gui.getBoardPanel().getP2() instanceof MedCompAI){
-                HumanVsAI(x, y,model);//medium we need to be able to pass the board method
+                HumanVsAI(x, y,model);
             }else if(gui.getBoardPanel().getP2() instanceof EasyCompAI){
-                HumanVsAI(x,y,model);//easy
-
+                HumanVsAI(x,y,model);
             }
-
-            gui.repaint();
+            gui.getBoardPanel().drawBoard();
         }
     }
 
@@ -197,7 +200,10 @@ public class Controller {
     private static void sizerequest2(String text, char test) {
         Object[] options = {"15x15", "9x9"};
         Object[] yesOrNo = {"Yes", "No"};
-        Sound.playAlertSound();
+        new Thread(() -> {
+            Sound.playAlertSound();
+        }).start();
+
 
         int confirm = JOptionPane.showOptionDialog(gui, text, "confirm",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
@@ -227,6 +233,7 @@ public class Controller {
     private static void sizerequest(String text){
         Object[] options = {"15x15", "9x9"};
         Object[] yesOrNo = {"Yes", "No"};
+
         Sound.playAlertSound();
 
         int confirm = JOptionPane.showOptionDialog(gui,text, "confirm",
@@ -238,13 +245,10 @@ public class Controller {
                     "pick a size", "New Game",
                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                     null, options, options[1]);
-            // 15 x 15
             if (n == JOptionPane.YES_OPTION) {
-                gui.dispose();
-                new Controller(new Board(15), new ConnectFive(15,'j'));
+                setNewBoard(15);
             }else{
-                gui.dispose();
-                new Controller(new Board(9), new ConnectFive(9,'j'));
+                setNewBoard(9);
             }
         }
     }

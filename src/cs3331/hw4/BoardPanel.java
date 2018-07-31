@@ -96,16 +96,14 @@ public class BoardPanel extends JPanel {
         g.setColor(Color.BLACK);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
-
-        int size = 675; // multiple of 9 and 15
+        g.drawRect(0,0,this.getWidth(),this.getHeight());
+        g.setColor(Color.WHITE);
+        g.fillRect(0,0,this.getWidth(),this.getHeight());
+        g.setColor(Color.BLACK);
+        int size = 675;
         int n = size / grid;
-        // for 15x15 distance in-between lines is 45px
-        // for 9x9 its 75px
         for (int i = 0; i <= 15; i++) {
-            //vertical lines
-            // starts at 25px
             g.drawLine(25 + i * n, 25, 25 + i * n, 700);
-            //horizontal
             g.drawLine(25, 25 + i * n, 700, 25 + i * n);
         }
 
@@ -118,9 +116,6 @@ public class BoardPanel extends JPanel {
             discPxl = 45;
         }
         Graphics2D g22d = (Graphics2D) g;
-
-        // Traverses array of Squares and if it finds a disc, it paints
-        // a circle
         for (int i = 0; i < board.size(); i++) {
 
             for (int j = 0; j < board.size(); j++) {
@@ -149,5 +144,9 @@ public class BoardPanel extends JPanel {
     }
     public Player getP2(){return p2;}
     public Player getP1(){return p1;}
+    void setBoard(Board board){
+        this.board=board;
+    }
+    public void setGrid(int g){this.grid=g;}
 
 }
