@@ -12,6 +12,7 @@ import java.net.URL;
 
 
 import java.awt.event.*;
+import java.util.Random;
 
 
 /**
@@ -255,9 +256,9 @@ public class ConnectFive extends JFrame {
 
     void colorChooserHelper(char player) {
 
-        color = JColorChooser.showDialog(this, "pick", Color.ORANGE);
+        color = JColorChooser.showDialog(this, "pick",Color.CYAN );
         if (color == null) {
-            color = Color.RED;
+            color =randomColor();
         } else {
             if (player == '1')
                 boardPanel.setColorP1(color);
@@ -277,7 +278,7 @@ public class ConnectFive extends JFrame {
      * @param x
      * @return int coordinate of the square that was clicked on the board
      */
-    int locateXY(int x) {
+    public int locateXY(int x) {
         int pxlsize = 675;
         int gridSize = squareSize;
         int distance = pxlsize / gridSize;
@@ -310,6 +311,14 @@ public class ConnectFive extends JFrame {
 
     BoardPanel getBoardPanel() {
         return boardPanel;
+    }
+    public Color randomColor()
+    {
+        Random random=new Random(); // Probably really put this somewhere where it gets executed only once
+        int red=random.nextInt(256);
+        int green=random.nextInt(256);
+        int blue=random.nextInt(256);
+        return new Color(red, green, blue);
     }
 
 }

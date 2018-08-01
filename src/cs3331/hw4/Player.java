@@ -9,7 +9,7 @@ public abstract class Player {
     protected int currX;
     protected int currY;
     protected boolean isReal;
-    protected char playerType;
+    public char playerType;
     public boolean getIsReal(){
         return isReal;
     }
@@ -44,8 +44,10 @@ public abstract class Player {
     public int getCurrY(){return currY;}
     //Eventually we will implement the AI stuff here or related to here that is why we have the irReal
 
-    public char getPlayerType() {
+    public  char getPlayerType() {
         return playerType;
     }
+    public  abstract void setPlayerType();
     public abstract void setMove(int x,int y,Board board);
+
 }

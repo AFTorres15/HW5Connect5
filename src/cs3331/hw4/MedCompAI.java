@@ -119,6 +119,10 @@ public class MedCompAI extends Computer {
         }
         return coordinates;
     }
+    @Override
+    public void setPlayerType() {
+        super.playerType='m';
+    }
 
 }
 

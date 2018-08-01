@@ -21,7 +21,7 @@ public class Square {
         return y;
     }
 
-    public int getPlayer() {
+    public Integer getPlayer() {
         return currPlayer;
     }
 }

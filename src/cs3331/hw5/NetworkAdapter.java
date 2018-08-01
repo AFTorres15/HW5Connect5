@@ -1,6 +1,8 @@
 package cs3331.hw5;
 
 
+import cs3331.hw4.Square;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -219,7 +221,7 @@ public class NetworkAdapter {
             this.header = header;
         }
 
-    };
+    }
 
     /** Called when a message is received. */
     public interface MessageListener {
@@ -488,7 +490,6 @@ public class NetworkAdapter {
      * Write a join message asynchronously.
      *
      * @see #writeJoinAck()
-     * @see #writeJoinAck(int, int...)
      */
     public void writeJoin() {
         writeMsg(MessageType.JOIN.header);
@@ -514,15 +515,19 @@ public class NetworkAdapter {
      *
      * @see #writeJoin()
      */
-    public void writeJoinAck(int size, int... squares) {
+    public void writeJoinAck(int size, Square[][] squares) {
         StringBuilder builder = new StringBuilder(MessageType.JOIN_ACK.header);
         builder.append("1,");
         builder.append(size);
-        for (int v: squares) {
-            builder.append(",");
-            builder.append(v);
+        for (int i=0;i<size;i++){
+            for(int j=0;j<size;j++){
+                builder.append(",");
+                builder.append(squares[i][j].getPlayer().toString());
+            }
         }
+        System.out.println("HEy SOmethi;n Happpaens");
         writeMsg(builder.toString());
+        System.out.println("Something else happend");
     }
 
     /**
@@ -567,12 +572,10 @@ public class NetworkAdapter {
      *
      * @param x 0-based column index of the square
      * @param y 0-based row index of the square
-     * @param number Filled-in number
-     *
      * @see #writeFillAck(int, int, int)
      */
-    public void writeFill(int x, int y, int number) {
-        writeMsg(String.format("%s%s,%s,%s", MessageType.FILL.header, x, y, number));
+    public void writeFill(int x, int y) {
+        writeMsg(String.format("%s%s,%s,%s", MessageType.FILL.header, x, y));
     }
 
     /**
@@ -582,7 +585,6 @@ public class NetworkAdapter {
      * @param y 0-based row index of the square
      * @param number Filled-in number
      *
-     * @see #writeFill(int, int, int)
      */
     public void writeFillAck(int x, int y, int number) {
         writeMsg(String.format("%s%s,%s,%s", MessageType.FILL_ACK.header, x, y, number));
@@ -642,6 +644,7 @@ public class NetworkAdapter {
                                 String m = messages.take();
                                 out.println(m);
                                 out.flush();
+                                System.out.println(m);
                             } catch (InterruptedException e) {
                                 return;
                             }

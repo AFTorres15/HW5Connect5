@@ -149,4 +149,10 @@ public class Board {
     public int getWinner() {
         return winner;
     }
+    public Square[][] sendBoard(){
+        return tiles;
+    }
+    public boolean[][] sendIsFilled(){return isFilled;}
+
+
 }

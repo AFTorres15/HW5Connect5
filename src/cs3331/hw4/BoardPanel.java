@@ -36,7 +36,6 @@ public class BoardPanel extends JPanel {
         this.board = board;
         grid = this.board.size();
         setOpaque(true);
-        setBackground(Color.CYAN);
         p1.setTileColor(Color.RED);
         p2.setTileColor(Color.BLACK);
     }
@@ -49,7 +48,6 @@ public class BoardPanel extends JPanel {
         this.board = board;
         grid = this.board.size();
         setOpaque(true);
-        setBackground(Color.CYAN);
         setP2(p2Type);
         p2.setTileColor(Color.BLACK);
 

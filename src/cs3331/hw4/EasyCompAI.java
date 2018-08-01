@@ -52,5 +52,8 @@ public class EasyCompAI extends Computer {
         return coordinates;
     }
 
-
+    @Override
+    public void setPlayerType() {
+        super.playerType='e';
+    }
 }
