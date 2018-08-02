@@ -1,8 +1,8 @@
 package cs3331.hw4;
 
 
-import cs3331.hw4.Board;
-import cs3331.hw4.BoardPanel;
+//import cs3331.hw4.Board;
+//import cs3331.hw4.BoardPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +13,8 @@ import java.net.URL;
 
 import java.awt.event.*;
 import java.util.Random;
+
+import static java.awt.event.InputEvent.*;
 
 
 /**
@@ -26,14 +28,13 @@ public class ConnectFive extends JFrame {
     /**
      * directory where images are stored
      */
-    private final static String IMAGE_DIR = "/image/";
+    private final   String IMAGE_DIR = "/image/";
 
     private JLabel message;
     private BoardPanel boardPanel;
     private int squareSize = 15;
-    private Color color;
 
-    public JButton playButton;
+    private JButton playButton;
     private JButton paintButton;
     private JButton easyButton;
     private JButton mediumButton;
@@ -41,6 +42,14 @@ public class ConnectFive extends JFrame {
     private JButton p2 = new JButton("Player 2");
     private JFrame frametmp;
     private JPanel popup;
+
+    //JMenu
+    private JMenuItem changeSize;
+    private JMenuItem easyDifficulty;
+    private JMenuItem mediumDifficulty;
+    private JMenuItem changeColors;
+    private JMenuItem online;
+
 
     // player1 is true, player2 is false
     private boolean turn = true;
@@ -73,7 +82,7 @@ public class ConnectFive extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    public void setSquareSize(int size){
+    void setSquareSize(int size){
         this.squareSize=size;
     }
 
@@ -124,20 +133,24 @@ public class ConnectFive extends JFrame {
 
     }
 
-    void addEasyListener(ActionListener eal) {
-        easyButton.addActionListener(eal);
+    void addEasyListener(ActionListener e) {
+        easyButton.addActionListener(e);
+        easyDifficulty.addActionListener(e);
     }
 
-    void addMediumListener(ActionListener mal) {
-        mediumButton.addActionListener(mal);
+    void addMediumListener(ActionListener e){
+        mediumButton.addActionListener(e);
+        mediumDifficulty.addActionListener(e);
     }
 
-    public void addPlayListener(ActionListener pal) {
-        playButton.addActionListener(pal);
+    void addPlayListener(ActionListener e){
+        playButton.addActionListener(e);
+        changeSize.addActionListener(e);
     }
 
-    void addPaintListener(ActionListener paintal) {
-        paintButton.addActionListener(paintal);
+    void addPaintListener(ActionListener e) {
+        paintButton.addActionListener(e);
+        changeColors.addActionListener(e);
     }
 
     void addPaintHelperListener(ActionListener actionL) {
@@ -161,15 +174,15 @@ public class ConnectFive extends JFrame {
         menuBar.add(menu);
 
         //Create Menu Items & set Icons
-        JMenuItem changeSize = new JMenuItem("Change Size");
+        changeSize = new JMenuItem("Change Size");
         changeSize.setIcon(createImageIcon("play.png"));
-        JMenuItem easyDifficulty = new JMenuItem("Play V.S COM (EASY)");
+         easyDifficulty = new JMenuItem("Play V.S COM (EASY)");
         easyDifficulty.setIcon(createImageIcon("easy.png"));
-        JMenuItem mediumDifficulty = new JMenuItem("Play V.S COM (MEDIUM)");
+        mediumDifficulty = new JMenuItem("Play V.S COM (MEDIUM)");
         mediumDifficulty.setIcon(createImageIcon("medium.png"));
-        JMenuItem ChageColors = new JMenuItem("Change Colors");
-        ChageColors.setIcon(createImageIcon("paint.png"));
-        JMenuItem online = new JMenuItem("Play Online");
+        changeColors = new JMenuItem("Change Colors");
+        changeColors.setIcon(createImageIcon("paint.png"));
+        online = new JMenuItem("Play Online");
         online.setIcon(createImageIcon("wifi-green.png"));
 
         // set keyStrokes
@@ -179,24 +192,24 @@ public class ConnectFive extends JFrame {
                 ActionEvent.ALT_MASK));
         mediumDifficulty.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
                 ActionEvent.ALT_MASK));
-        ChageColors.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
+        changeColors.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
                 ActionEvent.ALT_MASK));
         online.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
                 ActionEvent.ALT_MASK));
 
         changeSize.getAccessibleContext().setAccessibleDescription("Play new game");
-
+        //Controller controller=new Controller();
         // listeners
-        changeSize.addActionListener(new Controller.PlayListener());
-        easyDifficulty.addActionListener(new Controller.EasyListener());
-        mediumDifficulty.addActionListener(new Controller.MediumListener());
-        ChageColors.addActionListener(new Controller.PaintListener());
+//        changeSize.addActionListener(new Controller.PlayListener());
+//        easyDifficulty.addActionListener(new Controller.EasyListener());
+//        mediumDifficulty.addActionListener(new Controller.MediumListener());
+//        ChageColors.addActionListener(new Controller.PaintListener());
 
         // add to mennu
         menu.add(changeSize);
         menu.add(easyDifficulty);
         menu.add(mediumDifficulty);
-        menu.add(ChageColors);
+        menu.add(changeColors);
         menu.add(online);
 
         return menuBar;
@@ -209,7 +222,7 @@ public class ConnectFive extends JFrame {
      * @param size this is the size or the board
      * @return a panel that can be added to the window
      */
-    public BoardPanel boardPan(int size,char p2Type) {
+    private BoardPanel boardPan(int size, char p2Type) {
 
         boardPanel = new BoardPanel(new Board(size),p2Type);
         boardPanel.setPreferredSize(new Dimension(725, 725));
@@ -256,10 +269,10 @@ public class ConnectFive extends JFrame {
 
     void colorChooserHelper(char player) {
 
-        color = JColorChooser.showDialog(this, "pick",Color.CYAN );
-        if (color == null) {
-            color =randomColor();
-        } else {
+        Color color = JColorChooser.showDialog(this, "pick", Color.CYAN);
+        if (color == null)
+            randomColor();
+        else {
             if (player == '1')
                 boardPanel.setColorP1(color);
             if (player == '2')
@@ -275,7 +288,7 @@ public class ConnectFive extends JFrame {
      * takes the pixels in the window and divides it by board size
      * to return the coordinate of each square in the board grid
      *
-     * @param x
+     * @param x sdfgh
      * @return int coordinate of the square that was clicked on the board
      */
     public int locateXY(int x) {
@@ -285,7 +298,7 @@ public class ConnectFive extends JFrame {
         if (x > 25) {
             x = x - 25; // since we start at 25 we remove 25 in the calculations
         }
-        int result = (int) Math.round(x / distance);
+        int result = Math.round(x / distance);
         return result + 1;
     }
 
@@ -312,7 +325,7 @@ public class ConnectFive extends JFrame {
     public BoardPanel getBoardPanel() {
         return boardPanel;
     }
-    public Color randomColor()
+    private Color randomColor()
     {
         Random random=new Random(); // Probably really put this somewhere where it gets executed only once
         int red=random.nextInt(256);

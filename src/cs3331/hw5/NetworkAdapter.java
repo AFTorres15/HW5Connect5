@@ -1,7 +1,6 @@
 package cs3331.hw5;
 
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -160,102 +159,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class NetworkAdapter {
 
-    /** Different type of game messages. */
-    public enum MessageType {
-
-        /** Quit the game. This message has the form "quit:". */
-        QUIT ("quit:"),
-
-        /** Request to join an existing game. This message has the form "join:". */
-        JOIN ("join:"),
-
-        /**
-         * Acknowledgement of a join request. This message has the form
-         * "join_ack: n, [,size,board]", where n (response) is either 0 (declined)
-         * or 1 (accepted), size is the board size, and board is a sequence of
-         * non-empty squares of the board, each encoded as: x,y,v,f (where
-         * x, y: 0-based column/row indexes, v: number, f: 1 if the value
-         * is given/fixed or 0 if entered by the user.
-         */
-        JOIN_ACK ("join_ack:"),
-
-        /**
-         * Request to play a new game. This message has the form "new: size,board",
-         * size is the board size and board is a sequence of non-empty squares
-         * of the board, each encoded as: x,y,v,f (where x, y: 0-based column/row indexes,
-         * v: number, f: 1 if the value is given/fixed or 0 if entered by the user.
-         */
-        NEW ("new:"),
-
-        /**
-         * Acknowledgement of a new game request. This message has the form "new_ack: n",
-         * where n (response) is either 0 (declined) or 1 (accepted).
-         */
-        NEW_ACK ("new_ack:"),
-
-        /**
-         * Request to fill a number in the board. This message has the form "fill: x,y,v",
-         * where x and y are 0-based column/row indexes of a square and v is a number to fill
-         * in the square.
-         */
-        FILL ("fill:"),
-
-        /**
-         * Acknowledgement of a fill message. This message has the form "fill_ack: x,y,v",
-         * where x and y are 0-based column/row indexes of a square and v is a number to fill
-         * in the square.
-         */
-        FILL_ACK ("fill_ack:"),
-
-        /** Connection closed. To notify when the socket is closed. */
-        CLOSE (null),
-
-        /** Unknown message received. */
-        UNKNOWN (null);
-
-        /** Message header. */
-        private final String header;
-
-        MessageType(String header) {
-            this.header = header;
-        }
-
-    }
-
-    /** Called when a message is received. */
-    public interface MessageListener {
-
-        /**
-         * To be called when a message is received.
-         * The type of the received message along with optional content
-         * (x, y, z and others) are provided as arguments.
-         *
-         * @param type Type of the message received
-         * @param x First argument
-         * @param y Second argument
-         * @param z Third argument
-         * @param others Additional aruguments
-         */
-        void messageReceived(MessageType type, int x, int y, int z, int[] others);
-    }
-
-    private static final int[] EMPTY_INT_ARRAY = new int[0];
-
+    private   final int[] EMPTY_INT_ARRAY = new int[0];
     /** To be notified when a message is received. */
     private MessageListener listener;
-
     /** Asynchronous message writer. */
     private MessageWriter messageWriter;
-
     /** Reader connected to the peer to read messages from it. */
     private BufferedReader in;
-
     /** Writer connected to the peer to write messages to it. */
     private PrintWriter out;
-
     /** If not null, log all messages sent and received. */
     private PrintStream logger;
-
     /** Associated socket to communicate with the peer. */
     private Socket socket;
 
@@ -504,7 +418,6 @@ public class NetworkAdapter {
         writeMsg(MessageType.JOIN_ACK.header + "0");
     }
 
-
     public void writeJoinAck(int size) {
         StringBuilder builder = new StringBuilder(MessageType.JOIN_ACK.header);
         builder.append("1,");
@@ -609,6 +522,85 @@ public class NetworkAdapter {
     /** Notify the listener the receipt of the given message type. */
     private void notifyMessage(MessageType type, int x, int y, int[] others) {
         listener.messageReceived(type, x, y, 0, others);
+    }
+
+    /** Different type of game messages. */
+    public enum MessageType {
+
+        /** Quit the game. This message has the form "quit:". */
+        QUIT ("quit:"),
+
+        /** Request to join an existing game. This message has the form "join:". */
+        JOIN ("join:"),
+
+        /**
+         * Acknowledgement of a join request. This message has the form
+         * "join_ack: n, [,size,board]", where n (response) is either 0 (declined)
+         * or 1 (accepted), size is the board size, and board is a sequence of
+         * non-empty squares of the board, each encoded as: x,y,v,f (where
+         * x, y: 0-based column/row indexes, v: number, f: 1 if the value
+         * is given/fixed or 0 if entered by the user.
+         */
+        JOIN_ACK ("join_ack:"),
+
+        /**
+         * Request to play a new game. This message has the form "new: size,board",
+         * size is the board size and board is a sequence of non-empty squares
+         * of the board, each encoded as: x,y,v,f (where x, y: 0-based column/row indexes,
+         * v: number, f: 1 if the value is given/fixed or 0 if entered by the user.
+         */
+        NEW ("new:"),
+
+        /**
+         * Acknowledgement of a new game request. This message has the form "new_ack: n",
+         * where n (response) is either 0 (declined) or 1 (accepted).
+         */
+        NEW_ACK ("new_ack:"),
+
+        /**
+         * Request to fill a number in the board. This message has the form "fill: x,y,v",
+         * where x and y are 0-based column/row indexes of a square and v is a number to fill
+         * in the square.
+         */
+        FILL ("fill:"),
+
+        /**
+         * Acknowledgement of a fill message. This message has the form "fill_ack: x,y,v",
+         * where x and y are 0-based column/row indexes of a square and v is a number to fill
+         * in the square.
+         */
+        FILL_ACK ("fill_ack:"),
+
+        /** Connection closed. To notify when the socket is closed. */
+        CLOSE (null),
+
+        /** Unknown message received. */
+        UNKNOWN (null);
+
+        /** Message header. */
+        private final String header;
+
+        MessageType(String header) {
+            this.header = header;
+        }
+
+    }
+
+    /** Called when a message is received. */
+    public interface MessageListener {
+
+        /**
+         * To be called when a message is received.
+         * The type of the received message along with optional content
+         * (x, y, z and others) are provided as arguments.
+         *
+         * @param type Type of the message received
+         * @param x First argument
+         * @param y Second argument
+         * @param z Third argument
+         * @param others Additional aruguments
+         */
+        void messageReceived(MessageType type, int x, int y, int z, int[] others);
     }
 
     /**

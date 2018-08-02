@@ -4,11 +4,8 @@ import cs3331.hw4.ConnectFive;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+
 
 /**
  * Author: Cesar Valenzuela
@@ -24,13 +21,13 @@ public class NetworkGUI extends ConnectFive {
     private JButton onlineButton;
     private JButton networkButton;
     private JButton serverButton;
-    private static JButton playWithFriend=new JButton("Play new Game With Friend");
-    private static JButton host = new JButton("HOST");
-    private static JButton connectButton = new JButton( "connect" );
-    private static JButton disconnectButton = new JButton( "disconnect" );
-    private static JTextField portField;
-    private static JTextField nameField;
-    private static JTextField portField2;
+    private JButton playWithFriend = new JButton("Play new Game With Friend");;
+    private JButton host = new JButton("HOST");
+    private JButton connectButton = new JButton( "connect" );
+    private JButton disconnectButton = new JButton( "disconnect" );
+    private JTextField portField;
+    private JTextField nameField;
+    private JTextField portField2;
     private ImageIcon NETWORK_ON = createImageIcon("wifi-connected.png");
     private ImageIcon NETWORK_OFF;
 
@@ -47,31 +44,46 @@ public class NetworkGUI extends ConnectFive {
         JToolBar toolBar = super.toolBar();
         onlineButton = new JButton(createImageIcon("wifi-red.png"));
         onlineButton.setToolTipText("Play against online player.");
-        playWithFriend.setToolTipText("Play a new game with your online friend.");
+       // playWithFriend.setToolTipText("Play a new game with your online friend.");
         toolBar.add(onlineButton);
-        toolBar.add(playWithFriend);
+        //toolBar.add(playWithFriend);
+       // if(NetworkController.isConnected()) {
+            onlineButton = new JButton( createImageIcon( "wifi-green.png" ) );
+       // }
+       /* else*///  onlineButton = new JButton( createImageIcon( "wifi-red.png" ) );
+
+        onlineButton.setToolTipText("Play against Online Player");
         //playWithFriend.setVisible(false);
         return toolBar;
     }
+    public JToolBar getToolbar(){
+        return toolBar();
+    }
 
-    protected static int getPortField2(){
+    /** gets the port Number from peer panel
+     * converts from string to int
+     */
+    protected  int getPortField2(){
         int portNum = Integer.parseInt(portField2.getText());
         System.out.println(portNum + " this is portNum 2");
         return portNum;
     }
 
-    protected static String getNameField(){
+    protected  String getNameField(){
         String ip = nameField.getText();
         return ip;
     }
 
-    protected static int getPortNumber(){
+    protected  int getPortNumber(){
         int portNum = Integer.parseInt(portField.getText());
         System.out.println(portNum + "this is portNUm");
         return portNum;
     }
+    /** This is the online panel
+     *  HOLDS the player Panel and the peer panel
+     * */
 
-    protected static void maker() {
+    protected  void maker() {
         JTextArea eventBox;
 
         eventBox = new JTextArea( 10, 32 );
@@ -89,7 +101,7 @@ public class NetworkGUI extends ConnectFive {
 
     }
 
-    protected static JPanel makePlayerPanel() {
+    protected  JPanel makePlayerPanel() {
         JPanel panel = new JPanel();
 
         JLabel ipNumber = new JLabel( "IP number: " );
@@ -112,7 +124,7 @@ public class NetworkGUI extends ConnectFive {
         return panel;
     }
 
-    static void createOnlinePanel() {
+     void createOnlinePanel() {
         JFrame f = new JFrame( "Connection" );
         JPanel panel = new JPanel();
         panel.setSize( 400,400 );
@@ -130,7 +142,7 @@ public class NetworkGUI extends ConnectFive {
         panel.add( peerPanel );
     }
 
-    protected static JPanel makePeerPanel() {
+    protected  JPanel makePeerPanel() {
         JPanel panel = new JPanel();
         JLabel hostName = new JLabel( "Host name/IP: " );
 

@@ -16,8 +16,12 @@ import java.awt.event.*;
  */
 public class Controller {
 
-    private static Board model;
-    private static ConnectFive gui;
+    private Board model;
+    private ConnectFive gui;
+    private Sound sound=new Sound();
+    public Controller(){
+        System.out.println("Dummy Controller");
+    }
 
     protected Controller(Board model, ConnectFive gui) {
         this.model = model;
@@ -50,9 +54,9 @@ public class Controller {
             }
         } catch (InValidDiskPositionException ex) {
             gui.getMessage().setText("INVALID PLACEMENT");
-            Sound.playInvalidTileSound();
+            sound.playInvalidTileSound();
         } catch (Exception ex1) {
-           // System.out.println("TIE");
+            // System.out.println("TIE");
         }
         winHelper();
     }
@@ -70,7 +74,7 @@ public class Controller {
         } catch (InValidDiskPositionException ex1) {
             gui.getMessage().setText("INVALID PLACEMENT");
             new Thread(() -> {
-                Sound.playInvalidTileSound();
+                sound.playInvalidTileSound();
             }).start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,40 +92,13 @@ public class Controller {
             }
             //gui.getBoardPanel().setVisible(false);
             new Thread(() -> {
-                Sound.playWinSound();
+                sound.playWinSound();
             }).start();
             setNewBoard(gui.getBoardPanel().getBoard().size(),gui.getBoardPanel().getP2().playerType,gui.getBoardPanel().getColorP1(),gui.getBoardPanel().getColorP2());
         }
     }
 
-
-    /**
-     * Action Listener for the Play Button on the Tool Bar
-     */
-    static class PlayListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            sizeRequest("Start new game?");
-        }
-    }
-
-    /**
-     * Action Listener for the Paintbrush Button
-     */
-    static class PaintListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            gui.colorChooser();
-        }
-    }
-
-    /**
-     * Action Listener for easy AI button
-     */
-    static class EasyListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            Controller.sizeRequest2("Start a new game against easyAI?",'e');
-        }
-    }
-    private static void easyListenerHelper(int boardSize){
+    private   void easyListenerHelper(int boardSize){
         //System.out.println("ez");
         Color p1ColorTmp=gui.getBoardPanel().getColorP1();
         Color p2ColorTmp=gui.getBoardPanel().getColorP2();
@@ -131,7 +108,8 @@ public class Controller {
         gui.getBoardPanel().setColorP2(p2ColorTmp);
 
     }
-    public static void setNewBoard(int boardSize,char gameType,Color p1C,Color p2C){
+
+    public   void setNewBoard(int boardSize,char gameType,Color p1C,Color p2C){
         gui.getBoardPanel().setBoard(new Board(boardSize));
         gui.setSquareSize(boardSize);
         gui.getBoardPanel().setP2(gameType);
@@ -142,19 +120,110 @@ public class Controller {
         gui.getBoardPanel().setColorP2(p2C);
     }
 
-    private static void MediumListenerHelper(int boardSize){
+    private   void MediumListenerHelper(int boardSize){
         //System.out.println("MEDIUM");
         gui.getBoardPanel().setP2('m');
         setNewBoard(boardSize,gui.getBoardPanel().getP2().playerType,gui.getBoardPanel().getColorP1(),gui.getBoardPanel().getColorP2());
         gui.getBoardPanel().setColorP2(Color.BLACK);
         gui.getBoardPanel().setP2('m');
     }
+
+    private   void sizeRequest2(String text, char test) {
+        Object[] options = {"15x15", "9x9"};
+        Object[] yesOrNo = {"Yes", "No"};
+        new Thread(() -> {
+            sound.playAlertSound();
+        }).start();
+
+
+        int confirm = JOptionPane.showOptionDialog(gui, text, "confirm",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, yesOrNo, yesOrNo[1]);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            int n = JOptionPane.showOptionDialog(gui,
+                    "pick a size", "New Game",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                    null, options, options[1]);
+            // 15 x 15
+            if (n == JOptionPane.YES_OPTION) {
+                if (test == 'e') {
+                    easyListenerHelper(15);
+                } else if (test == 'm') {
+                    MediumListenerHelper(15);
+                }
+            } else {
+                if (test == 'e') {
+                    easyListenerHelper(9);
+                } else if (test == 'm') {
+                    MediumListenerHelper(9);
+                }
+            }
+        }
+    }
+
+    protected   void sizeRequest(String text){
+        Object[] options = {"15x15", "9x9"};
+        Object[] yesOrNo = {"Yes", "No"};
+
+        sound.playAlertSound();
+
+        int confirm = JOptionPane.showOptionDialog(gui,text, "confirm",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, yesOrNo, yesOrNo[1]);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            int n = JOptionPane.showOptionDialog(gui,
+                    "pick a size", "New Game",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                    null, options, options[1]);
+            if (n == JOptionPane.YES_OPTION) {
+                setNewBoard(15,gui.getBoardPanel().getP2().playerType,gui.getBoardPanel().getColorP1(),gui.getBoardPanel().getColorP2());
+            }else{
+                setNewBoard(9,gui.getBoardPanel().getP2().playerType,gui.getBoardPanel().getColorP1(),gui.getBoardPanel().getColorP2());
+            }
+        }
+    }
+
+    public static void main(String[] args){
+        Board board = new Board(15);
+        ConnectFive gui = new ConnectFive();
+        new Controller(board, gui);
+    }
+
+    /**
+     * Action Listener for the Play Button on the Tool Bar
+     */
+     class PlayListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            sizeRequest("Start new game?");
+        }
+    }
+
+    /**
+     * Action Listener for the Paintbrush Button
+     */
+     class PaintListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            gui.colorChooser();
+        }
+    }
+
+    /**
+     * Action Listener for easy AI button
+     */
+     class EasyListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            sizeRequest2("Start a new game against easyAI?",'e');
+        }
+    }
+
     /**
      * Action Listener for medium AI button
      */
-    static class MediumListener implements ActionListener {
+     class MediumListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            Controller.sizeRequest2("Start a new game against mediumAI?",'m');
+            sizeRequest2("Start a new game against mediumAI?",'m');
         }
     }
 
@@ -166,10 +235,10 @@ public class Controller {
             int x = gui.locateXY(e.getX());
             int y = gui.locateXY(e.getY());
             new Thread(() ->{
-                Sound.playTileSound();
+                sound.playTileSound();
             }).start();
-           // System.out.println(gui.getBoardPanel().getP2().getIsReal());
-           // System.out.println("P2 is of  type: "+gui.getBoardPanel().getP2().getClass());
+            // System.out.println(gui.getBoardPanel().getP2().getIsReal());
+            // System.out.println("P2 is of  type: "+gui.getBoardPanel().getP2().getClass());
             if (gui.getBoardPanel().getP2() instanceof Human) {
                 HumanVHuman(x, y);
             }else if (gui.getBoardPanel().getP2() instanceof MedCompAI){
@@ -199,65 +268,4 @@ public class Controller {
         }
     }
 
-    private static void sizeRequest2(String text, char test) {
-        Object[] options = {"15x15", "9x9"};
-        Object[] yesOrNo = {"Yes", "No"};
-        new Thread(() -> {
-            Sound.playAlertSound();
-        }).start();
-
-
-        int confirm = JOptionPane.showOptionDialog(gui, text, "confirm",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-                null, yesOrNo, yesOrNo[1]);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            int n = JOptionPane.showOptionDialog(gui,
-                    "pick a size", "New Game",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-                    null, options, options[1]);
-            // 15 x 15
-            if (n == JOptionPane.YES_OPTION) {
-                if (test == 'e') {
-                    easyListenerHelper(15);
-                } else if (test == 'm') {
-                    MediumListenerHelper(15);
-                }
-            } else {
-                if (test == 'e') {
-                    easyListenerHelper(9);
-                } else if (test == 'm') {
-                    MediumListenerHelper(9);
-                }
-            }
-        }
-    }
-    protected static void sizeRequest(String text){
-        Object[] options = {"15x15", "9x9"};
-        Object[] yesOrNo = {"Yes", "No"};
-
-        Sound.playAlertSound();
-
-        int confirm = JOptionPane.showOptionDialog(gui,text, "confirm",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-                null, yesOrNo, yesOrNo[1]);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            int n = JOptionPane.showOptionDialog(gui,
-                    "pick a size", "New Game",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-                    null, options, options[1]);
-            if (n == JOptionPane.YES_OPTION) {
-                setNewBoard(15,gui.getBoardPanel().getP2().playerType,gui.getBoardPanel().getColorP1(),gui.getBoardPanel().getColorP2());
-            }else{
-                setNewBoard(9,gui.getBoardPanel().getP2().playerType,gui.getBoardPanel().getColorP1(),gui.getBoardPanel().getColorP2());
-            }
-        }
-    }
-
-    public static void main (String[]args){
-        Board board = new Board(15);
-        ConnectFive gui = new ConnectFive();
-        new Controller(board, gui);
-    }
 }

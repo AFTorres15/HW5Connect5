@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.*;
 
 /**
  * Author: Cesar Valenzuela
@@ -24,6 +25,7 @@ public class NetworkController extends Controller implements NetworkAdapter.Mess
     public NetworkGUI view;
     private Board model;
     private NetworkAdapter network;
+    private Sound sound;
 
     private NetworkController(Board model, NetworkGUI gui) {
 
@@ -50,27 +52,6 @@ public class NetworkController extends Controller implements NetworkAdapter.Mess
 
     }
 
-    class ClickAdapter extends MouseAdapter {
-        public void mousePressed(MouseEvent e) {
-            int[] dummy = new int[1];
-            super.mousePressed(e);
-            int x = view.locateXY(e.getX());
-            int y = view.locateXY(e.getY());
-            System.out.println("network connected: " + isNetwork());
-
-            if (network != null) {
-                network.writeFill(x, y);
-            }
-        }
-    }
-
-    class PlayListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            sizeRequest3("Start new game?");
-        }
-    }
-
-
     @Override
     public void messageReceived(NetworkAdapter.MessageType type, int x, int y, int z, int[] others) {
         switch (type) {
@@ -78,6 +59,12 @@ public class NetworkController extends Controller implements NetworkAdapter.Mess
                 int n = JOptionPane.showConfirmDialog(null, "Join client?");
                 if (n == JOptionPane.YES_OPTION) {
                     network.writeJoinAck(model.size());
+                    //isConnected = true;
+//                    NetworkGUI.getToolbar();
+
+
+
+                    sound.playConnectedSound();
 
                 } else {
                     network.writeJoinAck();
@@ -107,10 +94,11 @@ public class NetworkController extends Controller implements NetworkAdapter.Mess
 
                 break;
             case FILL:
-                System.out.println("FILL");
+                System.out.println("FILL CASE");
+                network.writeFillAck(x,y,0);
                 break;
             case FILL_ACK:
-
+                System.out.println("FILL ACK");
                 break;
             case QUIT:
                 System.out.println("Quitting : One moment");
@@ -120,13 +108,26 @@ public class NetworkController extends Controller implements NetworkAdapter.Mess
 
                 break;
             case CLOSE:
-                //System.out.println("Connection Severed.");
+                System.out.println("Connection Severed.");
                 //disconnectListener();
                 network.writeQuit();
                 break;
             case UNKNOWN:
                 System.out.println("unknown");
                 break;
+        }
+    }
+
+    private void onlineGame(int x, int y){
+
+    }
+
+    private int popUpAns(){
+        int reponse = JOptionPane.showConfirmDialog(null, "GAME VERIFICATION");
+        if(reponse == JOptionPane.YES_OPTION){
+            return 0;
+        }else {
+            return 1;
         }
     }
 
@@ -138,6 +139,7 @@ public class NetworkController extends Controller implements NetworkAdapter.Mess
             return 1;
         }
     }
+
     private void writeNewPopUP() {
         int respon = popUpAns("Hey Someone wants a new board");
         if (respon == JOptionPane.YES_OPTION) {
@@ -149,7 +151,6 @@ public class NetworkController extends Controller implements NetworkAdapter.Mess
             network.writeNewAck(false);
         }
     }
-
 
     private void pairAServer(Socket socket) {
 
@@ -170,70 +171,11 @@ public class NetworkController extends Controller implements NetworkAdapter.Mess
         network.receiveMessagesAsync();
     }
 
-    // creates server
-    class ServerListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            new Thread(() -> {
-                try {
-                    System.out.println("Server Starting");
-
-                    ServerSocket servSocket = new ServerSocket(NetworkGUI.getPortNumber());
-                    Socket incoming = servSocket.accept();
-                    pairAServer(incoming);
-
-                } catch (Exception ex) {
-                    System.out.println("SERVER FAILURE");
-                }
-            }).start();
-        }
-
-    }
-
-    // client sends request
-    class ClientListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            new Thread(() -> {
-                System.out.println("client starting");
-                try {
-                    Socket socket = new Socket();
-
-                    //socket.connect(new InetSocketAddress("172.19.164.80", 8000), 5000);
-                    socket.connect(new InetSocketAddress(NetworkGUI.getNameField(), NetworkGUI.getPortField2()), 5000);
-
-                    // Brians 172.19.160.100
-                    // ANDREA 172.19.164.80
-                    // mine: 172.19.164.228
-
-
-                    //172.19.160.82
-
-                    pairAsClient(socket);
-                    justConnected();
-                } catch (Exception e1) {
-                    System.out.println("CLIENT FAILURE");
-                }
-            }).start();
-        }
-    }
-
-    class PlayWithFriendListener implements ActionListener{
-        @Override
-        public void actionPerformed(ActionEvent e){
-            //if not connected
-                System.out.println("Hey I want to start a new game");
-                view.getBoardPanel().setVisible(true);
-                sizeRequest3("Create a new game?");
-
-        }
-    }
     protected  void sizeRequest3(String text){
         Object[] options = {"15x15", "9x9"};
         Object[] yesOrNo = {"Yes", "No"};
 
-        Sound.playAlertSound();
+        sound.playAlertSound();
 
         int confirm = JOptionPane.showOptionDialog(view,text, "confirm",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
@@ -257,15 +199,11 @@ public class NetworkController extends Controller implements NetworkAdapter.Mess
         }
     }
 
-    static class OnlineListener implements ActionListener {
+    /*  private void disconnectListener() {
+          network.close();
+          isNetwork();
 
-        // ideas
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            NetworkGUI.createOnlinePanel();
-        }
-    }
-
+      }*/
     private boolean isNetwork() {
         if (network == null) {
             return false;
@@ -283,5 +221,100 @@ public class NetworkController extends Controller implements NetworkAdapter.Mess
         Board model = new Board(15);
         NetworkGUI view = new NetworkGUI();
         new NetworkController(model, view);
+    }
+
+
+    class ClickAdapter extends MouseAdapter {
+        public void mousePressed(MouseEvent e) {
+            int[] dummy = new int[1];
+            super.mousePressed(e);
+            int x = view.locateXY(e.getX());
+            int y = view.locateXY(e.getY());
+            System.out.println("network connected: " + isNetwork());
+
+            if (network != null) {
+                network.writeFill(x, y);
+            }
+        }
+    }
+
+    class PlayListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            sizeRequest3("Start new game?");
+        }
+    }
+
+    // creates server
+    class ServerListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            new Thread(() -> {
+                    try {
+                    System.out.println("Server Starting");
+                    //isServer=1;
+                    ServerSocket servSocket = new ServerSocket(view.getPortNumber());
+                    Socket incoming = servSocket.accept();
+                    pairAServer(incoming);
+
+                } catch (Exception ex) {
+                    System.out.println("SERVER FAILURE");
+                }
+            }).start();
+        }
+
+    }
+
+    // client sends request
+    class ClientListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            new Thread(() -> {
+                System.out.println("client starting");
+                try {
+                    Socket socket = new Socket();
+
+                    //socket.connect(new InetSocketAddress("172.19.164.80", 8000), 5000);
+                    socket.connect(new InetSocketAddress(view.getNameField(), view.getPortField2()), 5000);
+
+                    // Brians 172.19.160.100
+                    // ANDREA 172.19.164.80
+                    // mine: 172.19.164.228
+
+
+                    //172.19.160.82
+
+                    pairAsClient(socket);
+                    justConnected();
+                } catch (Exception e1) {
+                    System.out.println("CLIENT FAILURE");
+                }
+            }).start();
+        }
+    }
+
+    class PlayWithFriendListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e){
+            //if not connected
+            new Thread(() -> {
+                try {
+                    System.out.println("Hey I want to start a new game");
+                    view.getBoardPanel().setVisible(true);
+                    sizeRequest3("Create a new game?");
+                }catch (NullPointerException ex){}
+            }).start();
+
+
+        }
+    }
+
+    class OnlineListener implements ActionListener {
+
+        // ideas
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            view.createOnlinePanel();
+        }
     }
 }
