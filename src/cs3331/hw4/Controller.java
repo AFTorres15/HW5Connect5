@@ -131,7 +131,7 @@ public class Controller {
         gui.getBoardPanel().setColorP2(p2ColorTmp);
 
     }
-    static void setNewBoard(int boardSize,char gameType,Color p1C,Color p2C){
+    public static void setNewBoard(int boardSize,char gameType,Color p1C,Color p2C){
         gui.getBoardPanel().setBoard(new Board(boardSize));
         gui.setSquareSize(boardSize);
         gui.getBoardPanel().setP2(gameType);
@@ -232,7 +232,7 @@ public class Controller {
             }
         }
     }
-    private static void sizeRequest(String text){
+    protected static void sizeRequest(String text){
         Object[] options = {"15x15", "9x9"};
         Object[] yesOrNo = {"Yes", "No"};
 

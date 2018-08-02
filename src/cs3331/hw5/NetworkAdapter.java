@@ -1,7 +1,6 @@
 package cs3331.hw5;
 
 
-import cs3331.hw4.Square;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -490,6 +489,7 @@ public class NetworkAdapter {
      * Write a join message asynchronously.
      *
      * @see #writeJoinAck()
+     *
      */
     public void writeJoin() {
         writeMsg(MessageType.JOIN.header);
@@ -504,30 +504,17 @@ public class NetworkAdapter {
         writeMsg(MessageType.JOIN_ACK.header + "0");
     }
 
-    /**
-     * Write an "accepted" join_ack message asynchronously.
-     *
-     * @param size Size of the board
-     * @param squares Non-empty squares of the board. Each square is represented
-     *   as a tuple of (x, y, v, f), where x and y are 0-based column/row indexes,
-     *   v is a non-zero number, and f is a flag indicating whether the number
-     *   is given (1) or entered by the user (0).
-     *
-     * @see #writeJoin()
-     */
-    public void writeJoinAck(int size, Square[][] squares) {
+
+    public void writeJoinAck(int size) {
         StringBuilder builder = new StringBuilder(MessageType.JOIN_ACK.header);
         builder.append("1,");
         builder.append(size);
-        for (int i=0;i<size;i++){
-            for(int j=0;j<size;j++){
-                builder.append(",");
-                builder.append(squares[i][j].getPlayer().toString());
-            }
-        }
-        System.out.println("HEy SOmethi;n Happpaens");
+        //for(int v: squares){
+//        for (Square[] v: squares) {
+//            builder.append(",");
+//            builder.append(v);
+//        }
         writeMsg(builder.toString());
-        System.out.println("Something else happend");
     }
 
     /**
@@ -549,6 +536,7 @@ public class NetworkAdapter {
             builder.append(v);
         }
         writeMsg(builder.toString());
+
     }
 
     /**
@@ -572,6 +560,8 @@ public class NetworkAdapter {
      *
      * @param x 0-based column index of the square
      * @param y 0-based row index of the square
+     *
+     *
      * @see #writeFillAck(int, int, int)
      */
     public void writeFill(int x, int y) {
@@ -585,6 +575,7 @@ public class NetworkAdapter {
      * @param y 0-based row index of the square
      * @param number Filled-in number
      *
+     * @see #writeFill(int, int)
      */
     public void writeFillAck(int x, int y, int number) {
         writeMsg(String.format("%s%s,%s,%s", MessageType.FILL_ACK.header, x, y, number));
@@ -644,7 +635,6 @@ public class NetworkAdapter {
                                 String m = messages.take();
                                 out.println(m);
                                 out.flush();
-                                System.out.println(m);
                             } catch (InterruptedException e) {
                                 return;
                             }

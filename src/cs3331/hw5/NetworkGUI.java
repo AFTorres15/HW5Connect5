@@ -24,10 +24,16 @@ public class NetworkGUI extends ConnectFive {
     private JButton onlineButton;
     private JButton networkButton;
     private JButton serverButton;
+    private static JButton playWithFriend=new JButton("Play new Game With Friend");
+    private static JButton host = new JButton("HOST");
+    private static JButton connectButton = new JButton( "connect" );
+    private static JButton disconnectButton = new JButton( "disconnect" );
+    private static JTextField portField;
+    private static JTextField nameField;
+    private static JTextField portField2;
     private ImageIcon NETWORK_ON = createImageIcon("wifi-connected.png");
     private ImageIcon NETWORK_OFF;
-    private static JButton host = new JButton("HOST");
-    //private NetworkAdapter network;
+
 
     NetworkGUI() {
         super();
@@ -39,42 +45,41 @@ public class NetworkGUI extends ConnectFive {
 
     protected JToolBar toolBar() {
         JToolBar toolBar = super.toolBar();
-        //NETWORK_OFF = createImageIcon("wifi-disconnected.png");
-        //NETWORK_ON = createImageIcon("wifi-connected.png");
-
-        networkButton = new JButton("Client");
-        serverButton = new JButton("Server");
-        onlineButton = new JButton( "Play Online");
-
-        //networkButton.addActionListener(this::networkbuttonClicked);
-        networkButton.setToolTipText("client");
-        networkButton.setFocusPainted(false);
-
-        //serverButton.addActionListener(this::serverButtonClicked);
-        serverButton.setToolTipText("server");
-        serverButton.setFocusPainted(false);
-
-
-        toolBar.add(networkButton);
-        toolBar.add(serverButton);
+        onlineButton = new JButton(createImageIcon("wifi-red.png"));
+        onlineButton.setToolTipText("Play against online player.");
+        playWithFriend.setToolTipText("Play a new game with your online friend.");
         toolBar.add(onlineButton);
+        toolBar.add(playWithFriend);
+        //playWithFriend.setVisible(false);
         return toolBar;
     }
 
-    protected void joinConfirmBox(){
-
-
+    protected static int getPortField2(){
+        int portNum = Integer.parseInt(portField2.getText());
+        System.out.println(portNum + " this is portNum 2");
+        return portNum;
     }
 
-    protected void maker(){
+    protected static String getNameField(){
+        String ip = nameField.getText();
+        return ip;
+    }
+
+    protected static int getPortNumber(){
+        int portNum = Integer.parseInt(portField.getText());
+        System.out.println(portNum + "this is portNUm");
+        return portNum;
+    }
+
+    protected static void maker() {
         JTextArea eventBox;
 
-        eventBox = new JTextArea(10,32);
-        eventBox.setEditable(false);
+        eventBox = new JTextArea( 10, 32 );
+        eventBox.setEditable( false );
         JPanel button;
         button = new JPanel();
-        button.add(eventBox);
-        button.setBorder(BorderFactory.createEtchedBorder());
+        button.add( eventBox );
+        button.setBorder( BorderFactory.createEtchedBorder() );
 
         JPanel player;
         player = makePlayerPanel();
@@ -84,80 +89,64 @@ public class NetworkGUI extends ConnectFive {
 
     }
 
-    protected static JPanel makePlayerPanel(){
+    protected static JPanel makePlayerPanel() {
         JPanel panel = new JPanel();
 
-        //JLabel hostName = new JLabel("Host name: "); // proff told us to remove it
-        //JTextField nameField = new JTextField("localhost");
+        JLabel ipNumber = new JLabel( "IP number: " );
 
-        JLabel ipNumber = new JLabel("IP number: ");
-        JTextField ipField = new JTextField();
+        JTextField ipField = new JTextField("localhost");
+        ipField.setEditable(false);
 
-        JLabel portNum = new JLabel("Port number: ");
-        JTextField portField = new JTextField();
+        JLabel portNum = new JLabel( "Port number: " );
+        portField = new JTextField("8000",12);
 
-
-        //host = new JButton("Host");
-
-        //hostName.setBounds(10,10,60,30);
-        // nameField.setBounds(70,15,270,20);
-        // host.addActionListener( (ActionListener) host );
-        panel.setBorder(BorderFactory.createTitledBorder("Player"));
-        panel.setLayout(new GridLayout(3,2,0,5));
-        //panel.add(hostName);
-        //panel.add(nameField);
-        panel.add(ipNumber);
-        panel.add(ipField);
-        panel.add(portNum);
-        panel.add(portField);
-        panel.add(host);
-        panel.setVisible(true);
+        panel.setBorder( BorderFactory.createTitledBorder( "Player" ) );
+        panel.setLayout( new GridLayout( 4, 2, 5, 5 ) );
+        panel.add( ipNumber );
+        panel.add( ipField );
+        panel.add( portNum );
+        panel.add( portField );
+        panel.add( host );
+        panel.setVisible( true );
 
         return panel;
     }
 
-    public static void createOnlinePanel() {
-        JFrame f= new JFrame("Connection");
-        JPanel panel=new JPanel();
-        panel.setBounds(0,0,260,400);
-        // panel.setBackground(Color.gray);
-        f.setResizable(false);
-        f.add(panel);
-        f.setSize(400,400);
-        f.setLayout(null);
-        f.setVisible(true);
+    static void createOnlinePanel() {
+        JFrame f = new JFrame( "Connection" );
+        JPanel panel = new JPanel();
+        panel.setSize( 400,400 );
+        // panel.setBackground(Color.blue);
+        f.setResizable( false );
+        f.add( panel );
+        f.setSize( 400, 400 );
+        f.setLayout( null );
+        f.setVisible( true );
 
-        JPanel playerPanel = new JPanel();
-        playerPanel = makePlayerPanel();
-        panel.add(playerPanel);
+        JPanel playerPanel = makePlayerPanel();
+        panel.add( playerPanel );
 
-        JPanel peerPanel = new JPanel();
-        peerPanel = makePeerPanel();
-        panel.add(peerPanel);
+        JPanel peerPanel = makePeerPanel();
+        panel.add( peerPanel );
     }
 
-    protected static JPanel makePeerPanel(){
+    protected static JPanel makePeerPanel() {
         JPanel panel = new JPanel();
+        JLabel hostName = new JLabel( "Host name/IP: " );
 
-        JLabel hostName = new JLabel("Host name/IP: ");
-        JTextField nameField = new JTextField(10);
+        nameField = new JTextField( "127.0.0.1",12 );
+        JLabel portNum = new JLabel( "Port number: " );
+        portField2 = new JTextField( "8000",12 );
 
-        JLabel portNum = new JLabel("Port number: ");
-        JTextField portField = new JTextField(10);
-
-        JButton connect = new JButton("connect");
-
-        JButton disconnect = new JButton("disconnect");
-
-        panel.setBorder(BorderFactory.createTitledBorder("Peer"));
-        panel.setLayout(new GridLayout(3,2,5,5));
-        panel.add(hostName);
-        panel.add(nameField);
-        panel.add(portNum);
-        panel.add(portField);
-        panel.add(connect);
-        panel.add(disconnect);
-        panel.setVisible(true);
+        panel.setBorder( BorderFactory.createTitledBorder( "Peer" ) );
+        panel.setLayout( new GridLayout( 3, 2, 5, 5 ) );
+        panel.add( hostName );
+        panel.add( nameField );
+        panel.add( portNum );
+        panel.add( portField2 );
+        panel.add( connectButton );
+        panel.add( disconnectButton );
+        panel.setVisible( true );
 
         return panel;
 
@@ -176,8 +165,25 @@ public class NetworkGUI extends ConnectFive {
     }
 
     void addNetworkServerListener(ActionListener actionListener) {
+
         serverButton.addActionListener(actionListener);
     }
 
-}
+    void addConnectListener(ActionListener actionListener) {
+        connectButton.addActionListener( actionListener );
+    }
 
+    void addDisconnectListener(ActionListener actionListener) {
+        disconnectButton.addActionListener( actionListener );
+    }
+    void addPlayWithFriendListener(ActionListener actionListener){
+        playWithFriend.addActionListener(actionListener);
+    }
+    JButton getPlayWithFriend() {
+        return getPlayWithFriend();
+    }
+    void setVisiblePlayWithFriendVisibility(boolean visibility){
+        playWithFriend.setVisible(visibility);
+    }
+
+}

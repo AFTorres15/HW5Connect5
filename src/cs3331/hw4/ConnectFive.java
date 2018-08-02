@@ -33,7 +33,7 @@ public class ConnectFive extends JFrame {
     private int squareSize = 15;
     private Color color;
 
-    private JButton playButton;
+    public JButton playButton;
     private JButton paintButton;
     private JButton easyButton;
     private JButton mediumButton;
@@ -132,7 +132,7 @@ public class ConnectFive extends JFrame {
         mediumButton.addActionListener(mal);
     }
 
-    void addPlayListener(ActionListener pal) {
+    public void addPlayListener(ActionListener pal) {
         playButton.addActionListener(pal);
     }
 
@@ -297,7 +297,7 @@ public class ConnectFive extends JFrame {
         return null;
     }
 
-    JLabel getMessage() {
+    public JLabel getMessage() {
         return message;
     }
 
@@ -309,7 +309,7 @@ public class ConnectFive extends JFrame {
         this.turn = turn;
     }
 
-    BoardPanel getBoardPanel() {
+    public BoardPanel getBoardPanel() {
         return boardPanel;
     }
     public Color randomColor()
