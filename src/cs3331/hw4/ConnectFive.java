@@ -263,7 +263,7 @@ public class ConnectFive extends JFrame {
         frametmp.add(popup);
         frametmp.setSize(250, 150);
         frametmp.setVisible(true);
-        frametmp.setResizable(false);
+        frametmp.setResizable(true);
         frametmp.repaint();
     }
 

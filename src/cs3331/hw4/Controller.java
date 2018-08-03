@@ -37,8 +37,6 @@ public class Controller {
         gui.addPaintHelperListener(new PaintHelperListener());
         gui.addPaintHelper2Listener(new PaintHelper2Listener());
     }
-
-
     private void HumanVHuman(int x, int y) {
         try {
             if (gui.isTurn()) {
@@ -60,7 +58,6 @@ public class Controller {
         }
         winHelper();
     }
-
     private void HumanVsAI(int x, int y,Board board) {
         try {
             gui.getMessage().setText("Player 2's turn");
@@ -249,6 +246,7 @@ public class Controller {
             gui.getBoardPanel().drawBoard();
         }
     }
+
 
     /**
      *

@@ -220,6 +220,7 @@ public class NetworkAdapter {
             out.close();
             in.close();
             messageWriter.stop();
+            socket.close();
         } catch (Exception e) {
         }
     }
@@ -335,6 +336,7 @@ public class NetworkAdapter {
                 }
             }
         }
+        System.out.println("Hey something went wrong on adapter ln 338");
         notifyMessage(MessageType.UNKNOWN);
     }
 
@@ -434,22 +436,17 @@ public class NetworkAdapter {
      * Write a new game message asynchronously.
      *
      * @param size Size of the board
-     * @param squares Non-empty squares of the board. Each square is represented
+     *  Non-empty squares of the board. Each square is represented
      *   as a tuple of (x, y, v, f), where x and y are 0-based column/row indexes,
      *   v is a non-zero number, and f is a flag indicating whether the number
      *   is given (1) or entered by the user (0).
      *
      * @see #writeNewAck(boolean)
      */
-    public void writeNew(int size, int... squares) {
+    public void writeNew(int size) {
         StringBuilder builder = new StringBuilder(MessageType.NEW.header);
         builder.append(size);
-        for (int v: squares) {
-            builder.append(",");
-            builder.append(v);
-        }
         writeMsg(builder.toString());
-
     }
 
     /**
@@ -457,7 +454,7 @@ public class NetworkAdapter {
      *
      * @param response True for accepted; false for declined.
      *
-     * @see #writeNew(int, int...)
+     * @see # writeNew(int, int...)
      */
     public void writeNewAck(boolean response) {
         writeMsg(MessageType.NEW_ACK.header + toInt(response));
@@ -472,13 +469,13 @@ public class NetworkAdapter {
      * Write a fill message asynchronously.
      *
      * @param x 0-based column index of the square
-     * @param y 0-based row index of the square
+     * @param m  y 0-based row index of the square
      *
      *
      * @see #writeFillAck(int, int, int)
      */
-    public void writeFill(int x, int y) {
-        writeMsg(String.format("%s%s,%s,%s", MessageType.FILL.header, x, y));
+    public void writeFill(int x, int y,int number) {
+        writeMsg(String.format("%s%s,%s,%s", MessageType.FILL.header, x, y,number));
     }
 
     /**

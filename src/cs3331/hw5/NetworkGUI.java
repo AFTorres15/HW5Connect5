@@ -21,15 +21,14 @@ public class NetworkGUI extends ConnectFive {
     private JButton onlineButton;
     private JButton networkButton;
     private JButton serverButton;
-    private JButton playWithFriend = new JButton("Play new Game With Friend");;
+    private JButton playWithFriend;// = new JButton("Play new Game With Friend");
     private JButton host = new JButton("HOST");
     private JButton connectButton = new JButton( "connect" );
     private JButton disconnectButton = new JButton( "disconnect" );
     private JTextField portField;
     private JTextField nameField;
     private JTextField portField2;
-    private ImageIcon NETWORK_ON = createImageIcon("wifi-connected.png");
-    private ImageIcon NETWORK_OFF;
+
 
 
     NetworkGUI() {
@@ -42,19 +41,26 @@ public class NetworkGUI extends ConnectFive {
 
     protected JToolBar toolBar() {
         JToolBar toolBar = super.toolBar();
+        playWithFriend=new JButton("Play with friend.");
         onlineButton = new JButton(createImageIcon("wifi-red.png"));
         onlineButton.setToolTipText("Play against online player.");
-       // playWithFriend.setToolTipText("Play a new game with your online friend.");
+        playWithFriend.setToolTipText("Play a new game with your online friend.");
         toolBar.add(onlineButton);
-        //toolBar.add(playWithFriend);
+
        // if(NetworkController.isConnected()) {
-            onlineButton = new JButton( createImageIcon( "wifi-green.png" ) );
+           // onlineButton = new JButton( createImageIcon( "wifi-green.png" ) );
        // }
        /* else*///  onlineButton = new JButton( createImageIcon( "wifi-red.png" ) );
 
         onlineButton.setToolTipText("Play against Online Player");
         //playWithFriend.setVisible(false);
+        toolBar.add(playWithFriend);
+
         return toolBar;
+    }
+    private void rePaintToolBar(){
+        playWithFriend.setVisible(true);
+        toolBar().repaint();
     }
     public JToolBar getToolbar(){
         return toolBar();
@@ -189,6 +195,7 @@ public class NetworkGUI extends ConnectFive {
         disconnectButton.addActionListener( actionListener );
     }
     void addPlayWithFriendListener(ActionListener actionListener){
+
         playWithFriend.addActionListener(actionListener);
     }
     JButton getPlayWithFriend() {
@@ -196,6 +203,7 @@ public class NetworkGUI extends ConnectFive {
     }
     void setVisiblePlayWithFriendVisibility(boolean visibility){
         playWithFriend.setVisible(visibility);
+        rePaintToolBar();
     }
 
 }

@@ -2,8 +2,10 @@ package cs3331.hw4;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 
-import javax.swing.JPanel;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 /**
  * Class that acts as the Panel to display the model (board)
@@ -96,8 +98,11 @@ public class BoardPanel extends JPanel {
         g2d.setStroke(new BasicStroke(2));
         g.drawRect(0,0,this.getWidth(),this.getHeight());
         g.setColor(Color.WHITE);
+        //Image img=new ImageIcon("/image/boardBackground.png").getImage();
+        //g.drawImage(img,0,0,null);
         g.fillRect(0,0,this.getWidth(),this.getHeight());
-        g.setColor(Color.BLACK);
+
+        g.setColor(Color.DARK_GRAY);
         int size = 675;
         int n = size / grid;
         for (int i = 0; i <= 15; i++) {
